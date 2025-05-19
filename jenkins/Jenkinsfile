@@ -1,0 +1,37 @@
+pipeline {
+  agent any
+  environment {
+    DOCKER_IMAGE = "your-dockerhub-username/my-app:latest"
+  }
+  stages {
+    stage('Checkout') {
+      steps {
+        git 'https://github.com/your-username/your-repo.git'
+      }
+    }
+    stage('Build Docker Image') {
+      steps {
+        script {
+          docker.build(DOCKER_IMAGE)
+        }
+      }
+    }
+    stage('Push to DockerHub') {
+      steps {
+        withDockerRegistry([credentialsId: 'dockerhub-creds', url: '']) {
+          script {
+            docker.image(DOCKER_IMAGE).push()
+          }
+        }
+      }
+    }
+    stage('Deploy to Kubernetes') {
+      steps {
+        sh 'kubectl apply -f k8s/deployment.yaml'
+        sh 'kubectl apply -f k8s/service.yaml'
+        sh 'kubectl apply -f k8s/ingress.yaml'
+        sh 'kubectl apply -f k8s/hpa.yaml'
+      }
+    }
+  }
+}
