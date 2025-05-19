@@ -1,12 +1,12 @@
 pipeline {
   agent any
   environment {
-    DOCKER_IMAGE = "your-dockerhub-username/my-app:latest"
+    DOCKER_IMAGE = "mukesh05/my-app:latest"
   }
   stages {
     stage('Checkout') {
       steps {
-        git 'https://github.com/your-username/your-repo.git'
+        git 'https://github.com/mkatman/automating-application-scaling-and-load-balance/your-repo.git'
       }
     }
     stage('Build Docker Image') {
